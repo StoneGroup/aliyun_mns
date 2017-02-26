@@ -12,7 +12,6 @@
         }
     ],
     "require": {
-        "laravel/framework": ">=5.0.1"
     },
     "autoload": {
         "classmap": [
