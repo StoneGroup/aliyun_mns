@@ -7,13 +7,12 @@ use Config;
 
 class AliyunMNSQueue extends Queue implements QueueContract
 {
-
     private $client;
     private $queueMap;
 
     public function __construct($config = [])
     {
-        $config = Config::get('mns');
+        $config = config('queue.mns');
         $this->client = new Client($config['baseuri'], $config['key'], $config['secret']);
         $this->queueMap = $config['queue'];
     }
