@@ -17,6 +17,28 @@ class AliyunMNSQueue extends Queue implements QueueContract
         $this->queueMap = $config['queue'];
     }
 
+    public function size($queue = null)
+    {
+        $client = $this->client->getClient();
+
+        if (isset($queue)) {
+            $client->getQueueRef($queue);
+        }
+
+        $clientAttribute = $client->getAttribute();
+        $count = 0;
+
+        if ($clientAttribute->isSucceed()) {
+            $attributes = $clientAttribute->getQueueAttributes();
+            $data = [];
+            $data['activeMessages'] = $attributes->getActiveMessages();
+            $data['inactiveMessages'] = $attributes->getInactiveMessages();
+            $count = $data['activeMessages'] + $data['inactiveMessages'];
+        }
+
+        return $count;
+    }
+
     /**
      * Push a new job onto the queue.
      *

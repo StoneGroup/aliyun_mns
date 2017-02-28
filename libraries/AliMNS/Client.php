@@ -80,4 +80,9 @@ class Client
 
         return false;
     }
+
+    public function getClient()
+    {
+        return $this->client;
+    }
 }

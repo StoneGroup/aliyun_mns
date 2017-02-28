@@ -1,14 +1,14 @@
 {
-    "name": "stone/aliyun_mns",
+    "name": "gongyu/aliyun_mns",
     "type": "library",
     "version": "1.0.3",
     "description": "Laravel queue driver bases on Aliyun Message Service.",
-	"keywords": ["aliyun", "laravel"],
+	"keywords": ["消息服务", "laravel"],
 	"license": "MIT",
     "authors": [
         {
-            "name": "chefxu",
-            "email": "rssidea@qq.com"
+            "name": "chunfang",
+            "email": "xuchunfang@qudian.com"
         }
     ],
     "require": {
