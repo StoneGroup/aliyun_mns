@@ -3,18 +3,17 @@
 use Illuminate\Queue\Queue;
 use Illuminate\Contracts\Queue\Queue as QueueContract;
 use AliMNS\Client;
-use Config;
 
 class AliyunMNSQueue extends Queue implements QueueContract
 {
     private $client;
-    private $queueMap;
+
+    private static $queueMap;
 
     public function __construct($config = [])
     {
         $config = config('queue.mns');
         $this->client = new Client($config['baseuri'], $config['key'], $config['secret']);
-        $this->queueMap = $config['queue'];
     }
 
     public function size($queue = null)
@@ -63,7 +62,7 @@ class AliyunMNSQueue extends Queue implements QueueContract
      */
     public function pushRaw($payload, $queue = null, array $options = array())
     {
-        $this->client->setQueue($this->getQueue($queue));
+        $this->client->setQueue(self::getQueue($queue));
         return $this->client->publish($payload);
     }
 
@@ -80,7 +79,7 @@ class AliyunMNSQueue extends Queue implements QueueContract
     {
         $seconds = $this->getSeconds($delay);
         $payload = $this->createPayload($job, $data);
-        $this->client->setQueue($this->getQueue($queue));
+        $this->client->setQueue(self::getQueue($queue));
 
         return $this->client->publish($payload, $seconds);
     }
@@ -93,28 +92,32 @@ class AliyunMNSQueue extends Queue implements QueueContract
      */
     public function pop($queue = null)
     {
-        $this->client->setQueue($this->getQueue($queue));
+        $this->client->setQueue(self::getQueue($queue));
         $job = $this->client->consume();
         if (!is_null($job)) {
-            return $this->resolveJob($job);
+            return $this->resolveJob($job, $queue);
         }
     }
 
-    protected function resolveJob($job)
+    protected function resolveJob($job, $queue)
     {
-        return new Jobs\AliyunMNSJob($this->container, $job, $this->client);
+        return new Jobs\AliyunMNSJob($this->container, $job, $this->client, $queue);
     }
 
-    public function getQueue($queue = null)
+    public static function getQueue($queue = null)
     {
+        if (!isset(self::$queueMap)) {
+            self::$queueMap = config('queue.mns.queue');
+        }
+
         if (empty($queue)) {
-            return $this->queueMap['default'];
+            return self::$queueMap['default'];
         }
 
-        if (empty($this->queueMap[$queue])) {
+        if (empty(self::$queueMap[$queue])) {
             throw new \Exception('Aliyun MNS queue name is not setted');
         }
 
-        return $this->queueMap[$queue];
+        return self::$queueMap[$queue];
     }
 }
