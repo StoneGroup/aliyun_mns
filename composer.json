@@ -1,7 +1,7 @@
 {
     "name": "stone/aliyun_mns",
     "type": "library",
-    "version": "1.0.4",
+    "version": "1.0.3",
     "description": "Laravel queue driver bases on Aliyun Message Service.",
 	"keywords": ["消息服务", "laravel"],
 	"license": "MIT",
