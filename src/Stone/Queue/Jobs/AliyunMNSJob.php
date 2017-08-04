@@ -51,7 +51,7 @@ class AliyunMNSJob extends Job implements JobContract {
      */
     public function getRawBody()
     {
-        return $this->job->getMessageBody();
+        return $this->job;
     }
 
     /**
@@ -63,7 +63,7 @@ class AliyunMNSJob extends Job implements JobContract {
     {
         parent::delete();
         $this->resetQueue();
-        $this->client->delete($this->job->getReceiptHandle());
+        $this->client->delete();
     }
 
     public function fire()
@@ -93,8 +93,6 @@ class AliyunMNSJob extends Job implements JobContract {
      */
     public function attempts()
     {
-        $this->resetQueue();
-        return intval($this->job->getDequeueCount());
     }
 
     public function resetQueue()
